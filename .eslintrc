@@ -1,0 +1,21 @@
+{
+  "parser": "babel-eslint",
+  "extends": "airbnb",
+  "env": {
+    "browser": true,
+    "node": true,
+    "jest": true
+  },
+  "rules": {
+    "react/jsx-filename-extension": [1, { "extensions": [".js", ".jsx"] }],
+    "jsx-a11y/href-no-hash": 0, /*do not understand wtf is that, */
+    "max-len":0,
+    "linebreak-style": 0, /*working on windows*/
+    "indent": 0, /*prefer tab indent*/
+    "no-console": 0, /*i use console for deguging*/
+    "react/jsx-closing-bracket-location": [2, {"location": "after-props"}],
+    "react/jsx-indent": ["error", 4],
+    "arrow-body-style":0,
+    "no-plusplus": ["error", { "allowForLoopAfterthoughts": true }] /*https://eslint.org/docs/rules/no-plusplus*/
+  }
+}

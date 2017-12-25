@@ -4,6 +4,8 @@ const cors = require('cors');
 const mongoose = require('mongoose');
 const app = express();
 
+const conf = require('./config');
+
 mongoose.connect('mongodb://localhost/nouns', {useMongoClient: true});
 mongoose.Promise = global.Promise;
 mongoose.connection.on('connected', () => {
@@ -29,7 +31,7 @@ function checkAuth(req,res,next) {
 }
 
 app.use((req, res, next) => {
-    console.log('Трям!')
+    console.log('NODE_ENV',conf.env);
     next();
 });
 
@@ -117,7 +119,9 @@ app.use('/api/terms', terms);
 app.use('/api/users', users);
 
 app.use( (err,req,res,next) => {
-    console.log(err);
+    if (err) {
+        console.log(err);
+    }
 });
 
 const PORT = process.env.PORT || 5000;

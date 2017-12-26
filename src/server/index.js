@@ -3,16 +3,25 @@ const bodyParser = require('body-parser');
 const cors = require('cors');
 const mongoose = require('mongoose');
 const app = express();
+const chalk = require('chalk');
+const dotenv = require('dotenv');
+const path = require('path');
 
 const conf = require('./config');
+
+/**
+ * Load environment variables from .env file, where API keys and passwords are configured.
+ */
+dotenv.load({ path: '.env.example' });
 
 mongoose.connect('mongodb://localhost/nouns', {useMongoClient: true});
 mongoose.Promise = global.Promise;
 mongoose.connection.on('connected', () => {
-    console.log('Connected to mongodb');
+    console.log('%s Connected to mongodb', chalk.green('✗'));
 });
 mongoose.connection.on('disconnected', () => {
-    console.log('Disconnected from mongodb');
+    console.log('%s MongoDB connection error. Please make sure MongoDB is running.', chalk.red('✗'));
+    process.exit();
 });
 
 const articles = require('./routes/article');
@@ -37,6 +46,8 @@ app.use((req, res, next) => {
 
 app.use(cors());
 app.use(express.static('build'));
+app.set('views', path.join(__dirname, 'views'));
+app.set('view engine', 'pug');
 // parse application/x-www-form-urlencoded
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());

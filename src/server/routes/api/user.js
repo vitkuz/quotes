@@ -1,11 +1,11 @@
 const express = require('express');
 const router = express.Router();
 const mongoose = require('mongoose');
-const Author = require('../schemas/Author');
+const User = require('../../schemas/User');
 
 /* GET ALL PRODUCTS */
 router.get('/', function(req, res, next) {
-    Author.find(function (err, results) {
+    User.find(function (err, results) {
         if (err) return next(err);
         res.json(results);
     });
@@ -13,7 +13,7 @@ router.get('/', function(req, res, next) {
 
 /* GET SINGLE PRODUCT BY ID */
 router.get('/:id', function(req, res, next) {
-    Author.findById(req.params.id, function (err, result) {
+    User.findById(req.params.id, function (err, result) {
         if (err) return next(err);
         res.json(result);
     });
@@ -21,7 +21,7 @@ router.get('/:id', function(req, res, next) {
 
 /* SAVE PRODUCT */
 router.post('/', function(req, res, next) {
-    Author.create(req.body, function (err, result) {
+    User.create(req.body, function (err, result) {
         if (err) return next(err);
         res.json(result);
     });
@@ -29,7 +29,7 @@ router.post('/', function(req, res, next) {
 
 /* UPDATE PRODUCT */
 router.put('/:id', function(req, res, next) {
-    Author.findByIdAndUpdate(req.params.id, req.body, function (err, result) {
+    User.findByIdAndUpdate(req.params.id, req.body, function (err, result) {
         if (err) return next(err);
         res.json(result);
     });
@@ -37,7 +37,7 @@ router.put('/:id', function(req, res, next) {
 
 /* DELETE PRODUCT */
 router.delete('/:id', function(req, res, next) {
-    Author.findByIdAndRemove(req.params.id, req.body, function (err, result) {
+    User.findByIdAndRemove(req.params.id, req.body, function (err, result) {
         if (err) return next(err);
         res.json(result);
     });

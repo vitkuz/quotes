@@ -1,12 +1,11 @@
 const express = require('express');
 const router = express.Router();
 const mongoose = require('mongoose');
-const Noun = require('../schemas/Noun.js');
-
+const Author = require('../../schemas/Author');
 
 /* GET ALL PRODUCTS */
 router.get('/', function(req, res, next) {
-    Noun.find(function (err, results) {
+    Author.find(function (err, results) {
         if (err) return next(err);
         res.json(results);
     });
@@ -14,7 +13,7 @@ router.get('/', function(req, res, next) {
 
 /* GET SINGLE PRODUCT BY ID */
 router.get('/:id', function(req, res, next) {
-    Noun.findById(req.params.id, function (err, result) {
+    Author.findById(req.params.id, function (err, result) {
         if (err) return next(err);
         res.json(result);
     });
@@ -22,7 +21,7 @@ router.get('/:id', function(req, res, next) {
 
 /* SAVE PRODUCT */
 router.post('/', function(req, res, next) {
-    Noun.create(req.body, function (err, result) {
+    Author.create(req.body, function (err, result) {
         if (err) return next(err);
         res.json(result);
     });
@@ -30,7 +29,7 @@ router.post('/', function(req, res, next) {
 
 /* UPDATE PRODUCT */
 router.put('/:id', function(req, res, next) {
-    Noun.findByIdAndUpdate(req.params.id, req.body, function (err, result) {
+    Author.findByIdAndUpdate(req.params.id, req.body, function (err, result) {
         if (err) return next(err);
         res.json(result);
     });
@@ -38,7 +37,7 @@ router.put('/:id', function(req, res, next) {
 
 /* DELETE PRODUCT */
 router.delete('/:id', function(req, res, next) {
-    Noun.findByIdAndRemove(req.params.id, req.body, function (err, result) {
+    Author.findByIdAndRemove(req.params.id, req.body, function (err, result) {
         if (err) return next(err);
         res.json(result);
     });

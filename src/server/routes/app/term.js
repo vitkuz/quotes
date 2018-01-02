@@ -1,7 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const mongoose = require('mongoose');
-const Term = require('../schemas/Term');
+const Term = require('../../schemas/Term');
 
 /* GET ALL PRODUCTS */
 router.get('/', function(req, res, next) {

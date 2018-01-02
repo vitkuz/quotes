@@ -1,0 +1,12 @@
+extends layout
+
+block content
+    h1= title
+    div= message
+    form(method="post", action="contact/send")
+        h1 Contact form
+        input(type="text")
+        input(type="name")
+        input(type="email")
+
+

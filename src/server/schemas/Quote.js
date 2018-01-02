@@ -1,8 +1,14 @@
 const mongoose = require('mongoose');
 const timestamps = require('mongoose-timestamp');
-const Noun = require('./Noun')
+const Noun = require('./Noun');
+const Verb = require('./Verb');
+const Topic = require('./Topic');
 
 const Schema = mongoose.Schema({
+    howfinder: {
+        uid: String,
+        questions: Array,
+    },
     text: String,
     author: String,
     terms: Array,
@@ -14,7 +20,11 @@ const Schema = mongoose.Schema({
         type: mongoose.Schema.Types.ObjectId,
         ref: 'Article'
     }],
-    rating: Number,
+    upvote: Number,
+    likes: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'User'
+    },
     nounsId: [{
         type: mongoose.Schema.Types.ObjectId,
         ref: 'Noun'
@@ -22,6 +32,10 @@ const Schema = mongoose.Schema({
     termsId: [{
         type: mongoose.Schema.Types.ObjectId,
         ref: 'Term'
+    }],
+    topicsId: [{
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Topic'
     }],
     authorId: {
         type: mongoose.Schema.Types.ObjectId,

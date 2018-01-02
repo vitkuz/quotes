@@ -1,0 +1,26 @@
+extends layout
+
+block content
+    .container
+        div.paginator.paginator--top
+            a(href='/quotes/?page=1') 1
+            a(href='/quotes/?page=2') 2
+            a(href='/quotes/?page=3') 3
+
+        div= page.count + "/" + page.page + "/" + page.pages
+
+        each quote in page.data
+            div.quote
+                p
+                    strong
+                        a(href='/quotes/authors/'+quote.authorId._id) #{quote.authorId.name}
+                    |  - #{quote.text}
+                span
+                    a.btn.btn-success(href='/edit/quote/'+quote._id) Edit
+                    a.btn.btn-danger(href='/delete/quote/'+quote._id) Delete
+        div.paginator.paginator--bottom
+            a(href='/quotes/?page=1') 1
+            a(href='/quotes/?page=2') 2
+            a(href='/quotes/?page=3') 3
+
+

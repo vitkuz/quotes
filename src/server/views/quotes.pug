@@ -1,11 +1,43 @@
 extends layout
 
+mixin list(id, ...items)
+    ul(id=id)
+        each item in items
+            li= item
+
 block content
     .container
-        div.paginator.paginator--top
-            a(href='/quotes/?page=1') 1
-            a(href='/quotes/?page=2') 2
-            a(href='/quotes/?page=3') 3
+        if (page.pages > 1)
+            ul.pagination
+                if (page.page > 1)
+                    li
+                        a(href='/quotes/?page=1') First
+                if (page.page > 4)
+                    li
+                        a(href='#') ...
+                    - for (var index = page.page - 3; index <= page.page+3; index++)
+                        if (page.page == index)
+                            li.active
+                                a(href='/quotes/?page=' + index) #{index}
+                        else
+                            li
+                                a(href='/quotes/?page='+index) #{index}
+                        if (index == page.page+3)
+                            li
+                                a(href='#') ...
+                else
+                    - for (var index = 1; index <= page.pages; index++)
+                        if (page.page == index)
+                            li.active
+                                a(href='/quotes/?page=' + index) #{index}
+                        else
+                            li
+                                a(href='/quotes/?page=' + index) #{index}
+                        if (index == 10)
+                            - break
+                if (page.page != page.pages )
+                    li
+                        a(href='/quotes/?page=' + (page.pages)) Last
 
         div= page.count + "/" + page.page + "/" + page.pages
 
@@ -22,5 +54,6 @@ block content
             a(href='/quotes/?page=1') 1
             a(href='/quotes/?page=2') 2
             a(href='/quotes/?page=3') 3
+
 
 

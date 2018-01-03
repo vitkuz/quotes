@@ -3,6 +3,14 @@ const router = express.Router();
 const mongoose = require('mongoose');
 const User = require('../../schemas/User');
 
+const controller = require('../../controllers/app/user');
+
+router.post('/login', controller.login);
+router.get('/login', controller.loginPage);
+router.post('/register', controller.register);
+router.get('/register', controller.registerPage);
+// router.get('/logout', controller.logout);
+
 /* GET ALL PRODUCTS */
 router.get('/', function(req, res, next) {
     User.find(function (err, results) {

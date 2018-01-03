@@ -7,6 +7,42 @@ const chalk = require('chalk');
 const errorHandler = require('errorhandler');
 const dotenv = require('dotenv');
 const path = require('path');
+const cookieParser = require('cookie-parser')
+const session = require('express-session')
+const passport       = require('passport');
+const LocalStrategy  = require('passport-local').Strategy;
+
+const User = require('./schemas/User')
+
+passport.use(new LocalStrategy({
+    usernameField: 'email',
+    passwordField: 'password'
+}, function(username, password,done){
+    User.findOne({ username : username},function(err,user){
+        return err
+            ? done(err)
+            : user
+            ? password === user.password
+            ? done(null, user)
+            : done(null, false, { message: 'Incorrect password.' })
+            : done(null, false, { message: 'Incorrect username.' });
+    });
+}));
+
+passport.serializeUser(function(user, done) {
+    done(null, user.id);
+});
+
+
+passport.deserializeUser(function(id, done) {
+    User.findById(id, function(err,user){
+        err
+            ? done(err)
+            : done(null,user);
+    });
+});
+
+
 
 //API
 const apiArticles = require('./routes/api/article');
@@ -46,15 +82,19 @@ mongoose.connection.on('disconnected', () => {
 
 const app = express();
 
+
 function checkAuth(req,res,next) {
     console.log('TODO:protect admin routs')
     next()
 }
 
+
+
 /**
  * Express configuration.
  */
-// app.use(express.static(path.join(__dirname, 'build'), { maxAge: 31557600000 }));
+app.set('views', path.join(__dirname, 'views'));
+app.set('view engine', 'pug');
 app.use(express.static('build'));
 app.use((req, res, next) => {
     next();
@@ -64,11 +104,16 @@ app.set('host', process.env.OPENSHIFT_NODEJS_IP || '0.0.0.0');
 app.set('port', process.env.PORT || process.env.OPENSHIFT_NODEJS_PORT || 5000);
 
 app.use(cors());
-app.set('views', path.join(__dirname, 'views'));
-app.set('view engine', 'pug');
-// parse application/x-www-form-urlencoded
+
+
+
+app.use(cookieParser());
+app.use(session({ secret: 'SECRET' }));
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
+
+app.use(passport.initialize());
+app.use(passport.session());
 
 app.use('/api/articles', apiArticles);
 app.use('/api/nouns', apiNouns);

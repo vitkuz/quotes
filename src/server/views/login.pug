@@ -1,0 +1,10 @@
+extends layout
+block content
+    h4 Login to your account
+    form(action='/users/login' method='post')
+        fieldset
+            label(for='email') Email
+            input(type='email' name='email' placeholder='Your Email')
+            label(for='password') Password
+            input(type='password' name='password' placeholder='Your Password')
+            button(type='Login') Login

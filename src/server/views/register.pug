@@ -1,0 +1,26 @@
+extends layout
+
+block content
+    .container
+        .row
+            .col-md-6
+                h4 Why to register ?
+                ul
+                    li Reson 1
+                    li Reson 1
+                    li Reson 1
+                    li Reson 1
+            .col-md-6
+                h4 Register your account
+                form(action='/users/register' method='post')
+                    .form-group
+                        label(for='email') Email
+                        input.form-control(type='email' name='email' placeholder='Your Email')
+                    .form-group
+                        label(for='username') Username
+                        input.form-control(type='text' name='username' placeholder='Your Name')
+                    .form-group
+                        label(for='password') Password
+                        input.form-control(type='password' name='password' placeholder='Your Password')
+                    .form-group
+                        button.form-control(type='Register') Register

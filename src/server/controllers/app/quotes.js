@@ -1,3 +1,4 @@
+const mongoose = require('mongoose');
 const Quote = require('../../schemas/Quote');
 const Term = require('../../schemas/Term');
 const Noun = require('../../schemas/Noun');
@@ -24,12 +25,6 @@ exports.getAllQuotes = (req, res, next) => {
         const count = results[1];
         const data = results[0];
         const pages = Math.ceil(count / pageLimit) - 1;
-        // res.status(200).json({
-        //     count,
-        //     data,
-        //     page,
-        //     pages,
-        // });
 
         res.render('quotes', {page:{
                 count,
@@ -49,18 +44,23 @@ exports.updateQuoteById = (req, res, next) => {
 };
 
 exports.getQuoteById = (req, res, next) => {
-    Quote.findById(req.params.id, req.body, function (err, article) {
-        if (err) return next(err);
-        res.json(article);
-    });
+    Quote.findById(req.params.id)
+        .populate('termsId')
+        .populate('authorId')
+        .populate('verbsId')
+        .populate({path:'nounsId', select:'name'})
+        .exec(function (err, quote) {
+            if (err) return next(err);
+
+            console.log(quote);
+
+            res.render('quote', {page:{
+                quote
+            }});
+        })
 };
 
-exports.createQuote = (req, res, next) => {
-    Quote.create(req.body, function (err, result) {
-        if (err) return next(err);
-        res.json(result);
-    });
-};
+
 
 exports.removeQuoteById = (req, res, next) => {
     Quote.findByIdAndRemove(req.params.id, req.body, function (err, result) {
@@ -71,33 +71,65 @@ exports.removeQuoteById = (req, res, next) => {
 
 exports.getQuotesByAuthor = (req, res, next) => {
 
+    console.log(req.query);
+    console.log(req.path);
+
+    const base = req.path;
     const page = req.query.page ? Number(req.query.page) : 1;
     const skip = req.query.page ? pageLimit * page : 0;
-
-    console.log(`page ${page}, skip  ${skip}`);
 
     if (req.params.name && req.params.name.length === 24) {
         Promise.all([
             Quote.find({authorId: req.params.name})
                 .populate('termsId')
+                .populate('topicsId')
                 .populate('authorId')
                 .populate('verbsId')
                 .populate({path:'nounsId', select:'name'})
                 .limit(pageLimit)
                 .skip(skip)
                 .exec(),
-            Quote.count({authorId: req.params.name})
+            Quote.count({authorId: req.params.name}),
         ]).then((results) => {
-            const count = results[1];
             const data = results[0];
-            console.log(data.length);
-            const pages = Math.ceil(count / pageLimit) - 1;
-            res.status(200).json({
+            const count = results[1];
+            const pages = Math.floor(count / pageLimit);
+
+            let paginator = [];
+
+            for (var i = 1; i <= pages; i++) {
+
+                let classes = '';
+
+                if (i === 1) {
+                    classes += 'first '
+                }
+
+                if (i === page) {
+                    classes += 'active '
+                }
+
+                if (i === pages) {
+                    classes += 'last '
+                }
+
+
+                paginator.push({
+                    id: i,
+                    classes
+                })
+            }
+
+            console.log(paginator);
+
+            res.render('quotes-by-author', {page:{
+                base,
                 count,
                 data,
                 page,
                 pages,
-            });
+                paginator
+            }});
         });
     } else {
         Author.findOne({name:req.params.name}).then((author) => {
@@ -116,12 +148,13 @@ exports.getQuotesByAuthor = (req, res, next) => {
                 const data = results[0];
                 console.log('else',data.length);
                 const pages = Math.ceil(count / pageLimit) - 1;
-                res.status(200).json({
+                res.render('quotes-by-author', {page:{
+                    base,
                     count,
                     data,
                     page,
                     pages,
-                });
+                }});
             });
         })
     }
@@ -313,13 +346,36 @@ exports.aggregateQuotesBySimilarText = (req, res, next) => {
             count: { $gte: 2 }
         } },
         { $sort : { count : -1} },
-        { $limit : 10 }
     ], function (err, result) {
         if (err) {
             next(err);
         } else {
-            res.json(result)
+            res.render('duplicates', {page:{
+                result
+            }});
+
+            // res.json(result);
+
         }
     });
+
+};
+
+exports.renderQuoteAddForm = (req, res, next) => {
+
+    res.render('add-quote', {title: 'Add quote'});
+
+};
+
+exports.createQuote = (req, res, next) => {
+
+    console.log(req.body);
+
+    res.json(req.body);
+
+    // Quote.create(req.body, function (err, result) {
+    //     if (err) return next(err);
+    //     res.json(result);
+    // });
 
 };

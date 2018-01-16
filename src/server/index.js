@@ -7,6 +7,7 @@ const chalk = require('chalk');
 const errorHandler = require('errorhandler');
 const dotenv = require('dotenv');
 const path = require('path');
+
 const cookieParser = require('cookie-parser')
 const session = require('express-session');
 var MongoStore = require('connect-mongo')(session);
@@ -31,6 +32,8 @@ const terms = require('./routes/app/term');
 const users = require('./routes/app/user');
 const authors = require('./routes/app/author');
 
+const create = require('./routes/app/create');
+
 /**
  * Load environment variables from .env file, where API keys and passwords are configured.
  */
@@ -52,11 +55,17 @@ const db = mongoose.connection;
 
 const app = express();
 
+app.use(bodyParser.urlencoded({ extended: false }));
+app.use(bodyParser.json());
 
-
-function checkAuth(req,res,next) {
-    console.log('TODO:protect admin routs')
-    next()
+function requiresLogin(req, res, next) {
+    if (req.session && req.session.userId) {
+        return next();
+    } else {
+        var err = new Error('You must be logged in to view this page.');
+        err.status = 401;
+        return next(err);
+    }
 }
 
 
@@ -67,9 +76,8 @@ function checkAuth(req,res,next) {
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'pug');
 app.use(express.static('build'));
-app.use((req, res, next) => {
-    next();
-});
+app.use(express.static('test'));
+
 
 app.set('host', process.env.OPENSHIFT_NODEJS_IP || '0.0.0.0');
 app.set('port', process.env.PORT || process.env.OPENSHIFT_NODEJS_PORT || 5000);
@@ -89,8 +97,7 @@ app.use(session({
     })
 }));
 
-app.use(bodyParser.urlencoded({ extended: true }));
-app.use(bodyParser.json());
+
 
 app.use('/api/articles', apiArticles);
 app.use('/api/nouns', apiNouns);
@@ -108,15 +115,7 @@ app.use('/authors', authors);
 app.use('/terms', terms);
 app.use('/users', users);
 
-function requiresLogin(req, res, next) {
-    if (req.session && req.session.userId) {
-        return next();
-    } else {
-        var err = new Error('You must be logged in to view this page.');
-        err.status = 401;
-        return next(err);
-    }
-}
+app.use('/create', create);
 
 app.use('/profile', requiresLogin, (req,res,next) => {
     res.send('Its ok, you can view this page');
@@ -136,7 +135,12 @@ app.use(function (req, res, next) {
 // define as the last app.use callback
 app.use(function (err, req, res, next) {
     res.status(err.status || 500);
-    res.send(err.message);
+    if (err.status === 404) {
+        res.render('404', { title: 'Page Not Found'});
+    } else {
+        res.send(err.message);
+    }
+
 });
 
 /**

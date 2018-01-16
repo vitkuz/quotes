@@ -1,0 +1,22 @@
+extends layout
+
+block navigation
+    include includes/menu.pug
+
+
+block content
+    .container
+        p
+            strong
+                a(href='/quotes/authors/' + page.quote.authorId._id) #{page.quote.authorId.name}
+            |  - #{page.quote.text}
+        p
+            each verb in page.quote.verbsId
+                span.verb
+                    a(href='/verbs/' + verb._id) #{verb.name}
+        p
+            each noun in page.quote.nounsId
+                span.verb
+                    a(href='/nouns/' + noun._id) #{noun.name}
+
+

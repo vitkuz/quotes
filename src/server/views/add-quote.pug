@@ -1,0 +1,36 @@
+extends layout
+
+block navigation
+    include includes/menu.pug
+
+block content
+    .container
+        .row
+            .col-md-12
+                form(method='post', action='/create/quote')
+                    .form-group
+                        label(for='quoteTitle') Заголовок
+                        input#quoteTitle.form-control(type='text', aria-describedby='titleHelp', placeholder='Заголовок', name='title')
+                        small#titleHelp.form-text.text-muted Введите заголовок
+                    .form-group
+                        label(for='exampleFormControlTextarea1') Текст
+                        textarea#exampleFormControlTextarea1.form-control(rows='5', name='text')
+                    .form-group
+                        label(for='my-select') Категория
+                        select#my-select(name='character')
+                            option(value='Peter') Peter Griffin
+                            option(value='Lois') Lois Griffin
+                            option(value='Chris') Chris Griffin
+                            option(value='Meg') Meg Griffin
+                            option(value='Stewie') Stewie Griffin
+                            option(value='Cleveland') Cleveland Brown
+                            option(value='Joe') Joe Swanson
+                            option(value='Quagmire') Glenn Quagmire
+                            option(value='Evil Monkey') Evil Monkey
+                            option(value='Herbert') John Herbert
+
+                    .form-group
+                        button.btn.btn-primary(type='submit') Submit
+
+
+

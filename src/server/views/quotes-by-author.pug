@@ -1,0 +1,83 @@
+extends layout
+
+block navigation
+    include includes/menu.pug
+
+block content
+    .container
+        ul.pagination
+            each item in page.paginator
+                li.page-item
+                    a(href='/quotes'+page.base+'?page='+item.id, class='page-link '+item.classes) #{item.id}
+
+        .row
+            .col-md-6
+                p= page.count + "/" + page.page + "/" + page.pages
+            .col-md-6.text-right
+                a.btn.btn-primary(href='/create/quote')
+                    | Создать цитату
+        .row
+            .col-md-12.text-center
+                h1= page.data[0].authorId.name
+        each quote in page.data
+            .quote
+                .row
+                    .col-md-4
+                        .quote__text
+                            p
+                                strong
+                                    a(href='/quotes/authors/' + quote.authorId._id) #{quote.authorId.name}
+                            p
+                                |  #{quote.text}
+
+                    .col-md-8
+                        div
+                            h5  Questions
+                            p Empty
+                        div
+                            h5  Terms
+                            ul.quote__terms
+                                each term in quote.termsId
+                                    li.quote__terms-item
+                                        a.badge.badge-info(href='/terms/' + term._id)
+                                            if term.name
+                                                | #{term.name}
+                                            else
+                                                | XXX
+                        div
+                            h5  Topics
+                            ul.quote__topics
+                                each topic in quote.topicsId
+                                    li.quote__topics-item
+                                        a.badge.badge-info(href='/topics/' + topic._id)
+                                            if topic.name
+                                                | #{topic.name}
+                                            else
+                                                | XXX
+                        div
+                            h5  Verbs
+                            ul.quote__verbs
+                                each verb in quote.verbsId
+                                    li.quote__nouns-item
+                                        a.badge.badge-info(href='/verbs/' + verb._id)
+                                            if verb.name
+                                                | #{verb.name}
+                                            else
+                                                | XXX
+                        div
+                            h5  Nouns
+                            ul.quote__nouns
+                                each noun in quote.nounsId
+                                    li.quote__nouns-item
+                                        a.badge.badge-secondary(href='/nouns/' + noun._id) #{noun.name}
+                        span
+                            a.btn.btn-success.quote-controls__button(href='/edit/quote/' + quote._id) Edit
+                            a.btn.btn-danger.quote-controls__button(href='/delete/quote/' + quote._id) Delete
+                            a.btn.btn-info.quote-controls__button(href='/quotes/' + quote._id) View
+        ul.pagination
+            each item in page.paginator
+                li.page-item
+                    a(href='/quotes' + page.base + '?page=' + item.id, class='page-link ' + item.classes) #{item.id}
+
+
+

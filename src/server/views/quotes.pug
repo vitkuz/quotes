@@ -1,9 +1,15 @@
 extends layout
 
-mixin list(id, ...items)
-    ul(id=id)
-        each item in items
-            li= item
+block navigation
+    include includes/menu.pug
+
+    div
+        a(href='/users/login') Login
+        a(href='/users/logout') Logout
+        a(href='/users/register') Register
+        a(href='/users/password') Remember password
+        a(href='/profile') Profile
+
 
 block content
     .container
@@ -48,8 +54,9 @@ block content
                         a(href='/quotes/authors/'+quote.authorId._id) #{quote.authorId.name}
                     |  - #{quote.text}
                 span
-                    a.btn.btn-success(href='/edit/quote/'+quote._id) Edit
-                    a.btn.btn-danger(href='/delete/quote/'+quote._id) Delete
+                    a.btn.btn-success.quote-controls__button(href='/edit/quote/'+quote._id) Edit
+                    a.btn.btn-danger.quote-controls__button(href='/delete/quote/'+quote._id) Delete
+                    a.btn.btn-info.quote-controls__button(href='/quotes/'+quote._id) View
         div.paginator.paginator--bottom
             a(href='/quotes/?page=1') 1
             a(href='/quotes/?page=2') 2

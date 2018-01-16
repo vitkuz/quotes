@@ -1,0 +1,61 @@
+body {
+    background: #f3f3f3;
+}
+
+ul,ol {
+    padding: 0;
+    margin: 0;
+}
+
+.quote {
+    background:#fff;
+    border-radius:3px;
+    padding: 22px;
+    margin-bottom: 22px;
+}
+
+.quote-controls {
+
+}
+
+.pagination-wrapper {
+    overflow-x: scroll;
+}
+
+.quote-controls__button {
+    margin-right:11px;
+}
+
+.quote__questions,
+.quote__topics,
+.quote__terms,
+.quote__verbs,
+.quote__nouns {
+
+    list-style: none;
+    display: flex;
+    flex-wrap: wrap;
+    margin-bottom:22px;
+}
+
+.quote__questions-item,
+.quote__topics-item,
+.quote__terms-item,
+.quote__verbs-item,
+.quote__nouns-item {
+    margin-right:11px;
+}
+
+.active {
+    color: red;
+}
+
+.authors {
+    list-style:none;
+    display: flex;
+    flex-wrap: wrap;
+}
+
+.authors__item {
+    margin-right:11px;
+}

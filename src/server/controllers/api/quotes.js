@@ -7,7 +7,7 @@ const pageLimit = 30;
 
 exports.getAllQuotes = (req, res, next) => {
 
-    const page = req.query.page ? Number(req.query.page) : 1;
+    let page = req.query.page ? Number(req.query.page) : 1;
     const skip = req.query.page ? pageLimit * page : 0;
 
     Promise.all([
@@ -24,6 +24,7 @@ exports.getAllQuotes = (req, res, next) => {
         const count = results[1];
         const data = results[0];
         const pages = Math.ceil(count / pageLimit) - 1;
+
         res.status(200).json({
             count,
             data,
@@ -306,7 +307,7 @@ exports.aggregateQuotesBySimilarText = (req, res, next) => {
             count: { $gte: 2 }
         } },
         { $sort : { count : -1} },
-        { $limit : 10 }
+        { $limit : 50 }
     ], function (err, result) {
         if (err) {
             next(err);

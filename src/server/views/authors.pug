@@ -1,0 +1,36 @@
+extends layout
+
+block navigation
+    include includes/menu.pug
+
+    div
+        a(href='/users/login') Login
+        a(href='/users/logout') Logout
+
+
+block content
+    .container
+
+        .pagination-wrapper
+            ul.pagination
+                each item in page.paginator
+                    li.page-item
+                        a(href='/authors?page=' + item.id, class='page-link ' + item.classes) #{item.id}
+
+        .row
+            .col-md-6
+                |
+            .col-md-6.text-right
+                a.btn.btn-primary(href='/create/quote')
+                    | Создать цитату
+
+        .row
+            .col-md-12.text-center
+                ul.authors
+                    each author, index in page.authors
+                        li.authors__item
+                            a(href='/quotes/authors/'+author._id) #{author.name}
+
+
+
+
